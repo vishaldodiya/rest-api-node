@@ -1,0 +1,26 @@
+{
+  "name": "rest-api-node",
+  "version": "1.0.0",
+  "description": "Rest API with NodeJs and SQLite",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishaldodiya/rest-api-node.git"
+  },
+  "keywords": [
+    "nodejs",
+    "sqlite"
+  ],
+  "author": "Vishal Dodiya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vishaldodiya/rest-api-node/issues"
+  },
+  "homepage": "https://github.com/vishaldodiya/rest-api-node#readme",
+  "dependencies": {
+    "sqlite3": "^4.1.1"
+  }
+}
