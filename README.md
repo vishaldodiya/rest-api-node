@@ -15,7 +15,7 @@ To get list of all posts.
 $ curl http://localhost:8080/posts
 ```
 
-### GET /posts/<id>
+### GET /posts/\<id>
 To get one single post.
 ```
 $ curl http://localhost:8080/posts/1
