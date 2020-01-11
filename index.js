@@ -5,6 +5,9 @@ var path = require("path");
 var fs = require("fs");
 var http = require("http");
 var sqlite3 = require("sqlite3");
+var express = require("express");
+
+var app = express();
 
 // Setup DB Paths.
 const DB_PATH = path.join(__dirname, "my.db");
@@ -13,10 +16,11 @@ const HTTP_PORT = 8080;
 
 var SQL3;
 
-var httpServer = http.createServer(handleRequest);
+var httpServer = http.createServer(app);
 main().catch(console.error);
 
 async function main() {
+    defineRoutes(app);
     var myDB = new sqlite3.Database(DB_PATH);
 
     SQL3 = {
@@ -103,4 +107,24 @@ async function handleRequest(request, response) {
         response.writeHead(404);
         response.end('Records not Found!');
     }
+}
+
+function defineRoutes(app) {
+    app.get(/\/posts\b/, async function getRecords(request, response) {
+        let records = await getAllPosts() || [];
+
+        response.setHeader("Content-Type", "application/json");
+        response.setHeader("Cache-Control", "max-age:0, no-chache");
+        response.writeHead(200);
+        response.end(JSON.stringify(records));
+    });
+
+    app.get('/post/:id/', async function getRecord(request, response) {
+        let record = await getPost(request.params.id) || [];
+
+        response.setHeader("Content-Type", "application/json");
+        response.setHeader("Cache-Control", "max-age:0, no-chache");
+        response.writeHead(200);
+        response.end(JSON.stringify(record));
+    });
 }
