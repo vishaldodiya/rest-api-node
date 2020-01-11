@@ -6,8 +6,10 @@ var fs = require("fs");
 var http = require("http");
 var sqlite3 = require("sqlite3");
 var express = require("express");
+var bodyParser = require("body-parser");
 
 var app = express();
+app.use(bodyParser.json()); // parse application/json.
 
 // Setup DB Paths.
 const DB_PATH = path.join(__dirname, "my.db");
@@ -44,15 +46,15 @@ async function main() {
     console.log(`Listening on http://localhost:${HTTP_PORT}`);
 }
 
-async function insertPost(postTitle, postContent) {
+async function insertPost(data) {
     var result = await SQL3.run(
         `INSERT INTO post (title, content) VALUES (?, ?)`,
-        postTitle,
-        postContent
+        data.postTitle,
+        data.postContent
     );
 
     if (null != result) {
-        return result.post_id;
+        return result.lastID;
     }
 }
 
@@ -85,46 +87,31 @@ async function updatePost(postId, data) {
     return result;
 }
 
-async function handleRequest(request, response) {
-    if (/\/get-posts\b/.test(request.url)) {
-        let records = await getAllPosts() || [];
-
-        response.writeHead(200, {
-            "Content-Type": "application/json",
-            "Cache-Control": "max-age: 0, no-cache",
-        });
-
-        response.end(JSON.stringify(records));
-    } else if (/\/post\/(?<id>\d*\b)/.test(request.url)) {
-        console.log(request);
-        let record = await getPost(request.params.id) || [];
-
-        response.writeHead(200, {
-            "Content-Type": "application/json",
-            "Cache-Control": "max-age: 0, no-cache",
-        });
-    } else {
-        response.writeHead(404);
-        response.end('Records not Found!');
-    }
-}
-
 function defineRoutes(app) {
-    app.get(/\/posts\b/, async function getRecords(request, response) {
+    app.get('/posts', async function getRecords(req, res, next) {
         let records = await getAllPosts() || [];
 
-        response.setHeader("Content-Type", "application/json");
-        response.setHeader("Cache-Control", "max-age:0, no-chache");
-        response.writeHead(200);
-        response.end(JSON.stringify(records));
+        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Cache-Control", "max-age:0, no-chache");
+        res.writeHead(200);
+        res.end(JSON.stringify(records));
     });
 
-    app.get('/post/:id/', async function getRecord(request, response) {
-        let record = await getPost(request.params.id) || [];
+    app.get('/posts/:id/', async function getRecord(req, res, next) {
+        let record = await getPost(req.params.id) || [];
 
-        response.setHeader("Content-Type", "application/json");
-        response.setHeader("Cache-Control", "max-age:0, no-chache");
-        response.writeHead(200);
-        response.end(JSON.stringify(record));
+        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Cache-Control", "max-age:0, no-chache");
+        res.writeHead(200);
+        res.end(JSON.stringify(record));
+    });
+
+    app.post('/posts', async function setRecord(req, res, next) {
+        let record = await insertPost(req.body);
+
+        res.setHeader("Content-Type", "application/json");
+        res.setHeader('Cache-Control', "max-age:0, no-cache");
+        res.writeHead(200);
+        res.end(JSON.stringify(record));
     });
 }
