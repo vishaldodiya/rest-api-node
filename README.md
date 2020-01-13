@@ -28,14 +28,14 @@ $ curl -X POST http://localhost:8080/posts -d '{"postTitle": "New Post Title", "
 ```
 
 ## Built With
-* Node[https://nodejs.org/]
-* npm[https://www.npmjs.com/]
-* SQLite3[https://www.npmjs.com/package/sqlite3]
-* express[https://www.npmjs.com/package/express]
-* body-parser[https://www.npmjs.com/package/body-parser]
+* [Node](https://nodejs.org/)
+* [npm](https://www.npmjs.com/)
+* [SQLite3](https://www.npmjs.com/package/sqlite3)
+* [express](https://www.npmjs.com/package/express)
+* [body-parser](https://www.npmjs.com/package/body-parser)
 
 ## Author
-* Vishal Dodiya - vishaldodiya[https://github.com/vishaldodiya]
+* Vishal Dodiya - [vishaldodiya](https://github.com/vishaldodiya)
 
 ## License
 This project is licensed under the MIT License
