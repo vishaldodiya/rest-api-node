@@ -11,7 +11,7 @@ var router = {
             res.end(JSON.stringify(records));
         });
     
-        app.get('/posts/:id/', async function getRecord(req, res, next) {
+        app.get('/posts/:id', async function getRecord(req, res, next) {
             let record = await DB.getPost(req.params.id);
 
             res.setHeader("Content-Type", "application/json");
@@ -33,12 +33,42 @@ var router = {
         });
     
         app.post('/posts', async function setRecord(req, res, next) {
-            let record = await DB.insertPost(req.body);
-    
             res.setHeader("Content-Type", "application/json");
             res.setHeader("Cache-Control", "max-age:0, no-cache");
-            res.writeHead(200);
-            res.end(JSON.stringify(record));
+
+            await DB.insertPost(req.body)
+            .then(function(record) {
+                res.writeHead(201);
+                res.end(JSON.stringify(record));
+            })
+            .catch(function(err) {
+                res.writeHead(500);
+                res.end(JSON.stringify({
+                    "code": "Internal Server Error",
+                    "message": err
+                }));
+                next(err);
+            });
+        });
+
+        app.put('/posts/:id', async function updateRecord(req, res, next) {
+
+            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Cache-Control", "max-age:0, no-cache");
+
+            await DB.updatePost(req.params.id, req.body)
+            .then(function(record) {
+                res.writeHead(200);
+                res.end(JSON.stringify(record));
+            })
+            .catch(function(err) {
+                res.writeHead(500);
+                res.end(JSON.stringify({
+                    "code": "Internal Server Error",
+                    "message": err
+                }));
+                next(err);
+            });
         });
     }
 }
