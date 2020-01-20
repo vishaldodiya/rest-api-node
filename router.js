@@ -38,7 +38,7 @@ var router = {
 
             await DB.insertPost(req.body)
             .then(function(record) {
-                res.writeHead(201);
+                res.writeHead(201); // Success - Resource Created.
                 res.end(JSON.stringify(record));
             })
             .catch(function(err) {
@@ -69,6 +69,25 @@ var router = {
                 }));
                 next(err);
             });
+        });
+
+        app.delete('/posts/:id', async function deleteRecord(req, res, next) {
+            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Cache-Control", "max-age: 0, no-cache");
+
+            await DB.deletePost(req.params.id)
+            .then(function(record) {
+                res.writeHead(204); // Success - No Content
+                res.end(JSON.stringify(record));
+            })
+            .catch(function(err) {
+                res.writeHead(500);
+                res.end(JSON.stringify({
+                    "code": "Internal Server Error",
+                    "message": err
+                }));
+                next(err);
+            })
         });
     }
 }

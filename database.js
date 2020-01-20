@@ -64,6 +64,14 @@ var DB = {
         );
     
         return result;
+    },
+    deletePost: async function deletePost(postId) {
+        var result = await this.SQL3.run(
+            `DELETE FROM post WHERE post_id=?`,
+            postId
+        );
+
+        return result;
     }
 }
 
