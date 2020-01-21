@@ -72,6 +72,31 @@ var DB = {
         );
 
         return result;
+    },
+    getAllCategories: async function getAllCategories() {
+        var result = await this.SQL3.all(
+            `SELECT * FROM category`
+        );
+
+        return result;
+    },
+    getCategory: async function getCategory(categoryId) {
+        var result = await this.SQL3.get(
+            `SELECT * FROM category WHERE category_id=?`,
+            categoryId
+        );
+
+        return result;
+    },
+    updateCategory: async function updateCategory(categoryId, data) {
+        var newData = Object.entries(data).map(([key, value]) => `${key}="${value}"`).join(',');
+
+        var result = await this.SQL3.run(
+            `UPDATE category SET ${newData} WHERE category_id=?`,
+            categoryId
+        );
+
+        return result;
     }
 }
 
